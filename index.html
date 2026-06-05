@@ -1,100 +1,225 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy Birthday ❤️</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! ❤️</title>
+    <style>
+        /* Base Styles & Dark Background Setup */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: #ffffff;
+            min-height: 100vh;
+            text-align: center;
+            position: relative;
+            background-color: #121212; /* Fallback dark color */
+        }
 
-<style>
-body{
-    margin:0;
-    font-family:Arial,sans-serif;
-    background:linear-gradient(to bottom,#ffdde1,#ee9ca7);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-    overflow-x:hidden;
-}
+        /* The Fullscreen Background Image with Dark Overlay */
+        .background-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            /* REPLACE 'background.jpg' WITH YOUR BACKGROUND IMAGE NAME */
+            background-image: url('background.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            /* This darkens your picture so text is easy to read */
+            filter: brightness(30%); 
+            z-index: -1;
+        }
 
-#envelope{
-    font-size:120px;
-    cursor:pointer;
-    text-align:center;
-}
+        /* Entry Overlay / Music Gate */
+        #overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease;
+        }
+        .open-btn {
+            padding: 15px 35px;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #d4af37, #aa7c11); /* Elegant Gold */
+            color: #000;
+            font-weight: bold;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);
+            transition: transform 0.2s;
+        }
+        .open-btn:hover { transform: scale(1.05); }
 
-#letter{
-    display:none;
-    max-width:800px;
-    background:white;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 0 20px rgba(0,0,0,0.2);
-    text-align:center;
-}
+        /* Content Container */
+        .container {
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
 
-h1{
-    color:#ff4d6d;
-}
+        header h1 {
+            font-size: 2.8rem;
+            color: #d4af37; /* Elegant Gold */
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        header p { font-size: 1.1rem; color: #cccccc; margin-bottom: 50px; }
 
-.gallery img{
-    width:250px;
-    max-width:90%;
-    margin:10px;
-    border-radius:15px;
-}
+        /* Click to Reveal Message Cards */
+        .reveal-card {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .reveal-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #d4af37;
+            transform: translateY(-3px);
+        }
+        .placeholder-text {
+            font-size: 1.2rem;
+            color: #d4af37;
+            font-weight: 500;
+        }
+        .actual-message {
+            display: none;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            color: #f0f0f0;
+            animation: fadeIn 0.8s ease forwards;
+        }
 
-p{
-    line-height:1.8;
-    color:#444;
-}
-</style>
+        /* Video Gift Box Section */
+        .video-section {
+            margin-top: 60px;
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px dashed #d4af37;
+            padding: 40px 20px;
+            border-radius: 15px;
+        }
+        .gift-box-btn {
+            font-size: 3.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s;
+            display: block;
+            margin: 15px auto 0 auto;
+        }
+        .gift-box-btn:hover { transform: scale(1.15) rotate(5deg); }
+        
+        .video-container {
+            display: none;
+            margin-top: 25px;
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            border: none;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
-
 <body>
 
-<div id="envelope" onclick="openLetter()">
-    💌
-    <p style="font-size:20px;">Click to Open</p>
-</div>
+    <div class="background-overlay"></div>
 
-<div id="letter">
-    <h1>Happy Birthday My Love ❤️</h1>
-
-    <p>
-        Happy Birthday to the most amazing person in my life.
-    </p>
-
-    <p>
-        Thank you for all the memories, laughter, and love we've shared.
-        Every day with you is special.
-    </p>
-
-    <p>
-        I hope today brings you as much happiness as you've brought into my life.
-    </p>
-
-    <div class="gallery">
-        <img src="photo1.jpg">
-        <img src="photo2.jpg">
-        <img src="photo3.jpg">
+    <div id="overlay">
+        <h2 style="margin-bottom: 20px; color: #d4af37; font-weight: 300;">I made something for you...</h2>
+        <button class="open-btn" onclick="startPage()">Click to Open ❤️</button>
     </div>
 
-    <h2>I Love You ❤️</h2>
-</div>
+    <audio id="bg-music" src="music.mp3" loop></audio>
 
-<audio id="music" loop>
-    <source src="music.mp3" type="audio/mpeg">
-</audio>
+    <div class="container">
+        <header>
+            <h1>Happy Birthday, [Name]! 🎉</h1>
+            <p>I have a few things I want to tell you today. Click each one...</p>
+        </header>
 
-<script>
-function openLetter(){
-    document.getElementById("envelope").style.display="none";
-    document.getElementById("letter").style.display="block";
+        <div class="reveal-card" onclick="revealParagraph(this)">
+            <div class="placeholder-text">✨ First, I want to say...</div>
+            <div class="actual-message">
+                This is your first paragraph. Write something sweet here about how much she means to you, or a favorite memory from this past year.
+            </div>
+        </div>
 
-    document.getElementById("music").play();
-}
-</script>
+        <div class="reveal-card" onclick="revealParagraph(this)">
+            <div class="placeholder-text">✨ Something I love about you...</div>
+            <div class="actual-message">
+                This is your second paragraph. You can talk about her smile, her personality, or a little inside joke that only the two of you understand.
+            </div>
+        </div>
 
+        <div class="reveal-card" onclick="revealParagraph(this)">
+            <div class="placeholder-text">✨ My wish for you...</div>
+            <div class="actual-message">
+                This is your third paragraph. Write your beautiful birthday wishes for her future here, and promise her many more birthdays together.
+            </div>
+        </div>
+
+        <div class="video-section">
+            <h3 style="color: #d4af37;">One last surprise...</h3>
+            <p style="color: #aaa; font-size: 0.9rem; margin-top: 5px;">Click the gift box to open your final present!</p>
+            <button class="gift-box-btn" id="gift-button" onclick="revealVideo()">🎁</button>
+            
+            <div class="video-container" id="video-wrapper">
+                <iframe id="yt-player" src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=-TP4R--M7Ch-OonL&enablejsapi=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startPage() {
+            const overlay = document.getElementById('overlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => overlay.style.display = 'none', 1000);
+
+            const music = document.getElementById('bg-music');
+            music.play().catch(err => console.log("Audio waiting for interaction"));
+        }
+
+        function revealParagraph(card) {
+            const placeholder = card.querySelector('.placeholder-text');
+            const message = card.querySelector('.actual-message');
+            
+            if (message.style.display === 'none' || message.style.display === '') {
+                placeholder.style.display = 'none';
+                message.style.display = 'block';
+            }
+        }
+
+        function revealVideo() {
+            const videoWrapper = document.getElementById('video-wrapper');
+            const giftButton = document.getElementById('gift-button');
+            
+            // Show video, hide gift box button
+            videoWrapper.style.display = 'block';
+            giftButton.style.display = 'none';
+            
+            // Automatically pause the background music so it doesn't clash with the video
+            const music = document.getElementById('bg-music');
+            music.pause();
+        }
+    </script>
 </body>
 </html>
