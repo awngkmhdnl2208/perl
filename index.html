@@ -56,6 +56,32 @@
         }
         .open-btn:hover { transform: scale(1.05); }
 
+        /* Floating Audio Mute Button */
+        #mute-btn {
+            display: none; /* Hidden until overlay is clicked */
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(20, 20, 20, 0.85);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: transform 0.2s, background 0.2s;
+            width: 50px;
+            height: 50px;
+            align-items: center;
+            justify-content: center;
+        }
+        #mute-btn:hover {
+            transform: scale(1.1);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
         /* Content Container */
         .container {
             max-width: 650px;
@@ -82,6 +108,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
         }
         .reveal-card:hover {
             background: rgba(255, 255, 255, 0.12);
@@ -98,7 +125,19 @@
             line-height: 1.6;
             font-size: 1.1rem;
             color: #f0f0f0;
-            animation: fadeIn 0.8s ease forwards;
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .close-card-btn {
+            display: block;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            color: #ff6b6b;
+            text-decoration: underline;
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
         }
 
         /* Video Gift Box Section */
@@ -120,6 +159,20 @@
         }
         .gift-box-btn:hover { transform: scale(1.15) rotate(5deg); }
         
+        .close-video-btn {
+            display: none;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin: 15px auto 0 auto;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .close-video-btn:hover { background: #fa5252; }
+
         .video-container {
             display: none;
             margin-top: 25px;
@@ -136,19 +189,23 @@
             border: none;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
+    <!-- Background image container with dark filter -->
     <div class="background-overlay"></div>
 
+    <!-- Entrance Curtain (Handles Music Autoplay) -->
     <div id="overlay">
         <h2 style="margin-bottom: 20px; color: #d4af37; font-weight: 300;">I made something for you...</h2>
         <button class="open-btn" onclick="startPage()">Click to Open ❤️</button>
     </div>
 
+    <!-- Background Music & Music Control Button -->
     <audio id="bg-music" src="music.mp3" loop></audio>
+    <button id="mute-btn" onclick="toggleMute()">🔊</button>
 
     <div class="container">
         <header>
@@ -156,69 +213,127 @@
             <p>I have a few things I want to tell you today. Click each one...</p>
         </header>
 
-        <div class="reveal-card" onclick="revealParagraph(this)">
+        <!-- Paragraph 1 -->
+        <div class="reveal-card" onclick="revealParagraph(this, event)">
             <div class="placeholder-text">✨ First, I want to say...</div>
             <div class="actual-message">
-                This is your first paragraph. Write something sweet here about how much she means to you, or a favorite memory from this past year.
+                <p>This is your first paragraph. Write something sweet here about how much she means to you, or a favorite memory from this past year.</p>
+                <button class="close-card-btn" onclick="closeParagraph(this, event)">Close Message ↑</button>
             </div>
         </div>
 
-        <div class="reveal-card" onclick="revealParagraph(this)">
+        <!-- Paragraph 2 -->
+        <div class="reveal-card" onclick="revealParagraph(this, event)">
             <div class="placeholder-text">✨ Something I love about you...</div>
             <div class="actual-message">
-                This is your second paragraph. You can talk about her smile, her personality, or a little inside joke that only the two of you understand.
+                <p>This is your second paragraph. You can talk about her smile, her personality, or a little inside joke that only the two of you understand.</p>
+                <button class="close-card-btn" onclick="closeParagraph(this, event)">Close Message ↑</button>
             </div>
         </div>
 
-        <div class="reveal-card" onclick="revealParagraph(this)">
+        <!-- Paragraph 3 -->
+        <div class="reveal-card" onclick="revealParagraph(this, event)">
             <div class="placeholder-text">✨ My wish for you...</div>
             <div class="actual-message">
-                This is your third paragraph. Write your beautiful birthday wishes for her future here, and promise her many more birthdays together.
+                <p>This is your third paragraph. Write your beautiful birthday wishes for her future here, and promise her many more birthdays together.</p>
+                <button class="close-card-btn" onclick="closeParagraph(this, event)">Close Message ↑</button>
             </div>
         </div>
 
+        <!-- Final Video Box Section -->
         <div class="video-section">
             <h3 style="color: #d4af37;">One last surprise...</h3>
             <p style="color: #aaa; font-size: 0.9rem; margin-top: 5px;">Click the gift box to open your final present!</p>
+            
             <button class="gift-box-btn" id="gift-button" onclick="revealVideo()">🎁</button>
             
             <div class="video-container" id="video-wrapper">
                 <iframe id="yt-player" src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=-TP4R--M7Ch-OonL&enablejsapi=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
+
+            <button class="close-video-btn" id="close-video-button" onclick="closeVideo()">Close Video ↑</button>
         </div>
     </div>
 
     <script>
+        const music = document.getElementById('bg-music');
+        const muteBtn = document.getElementById('mute-btn');
+
         function startPage() {
             const overlay = document.getElementById('overlay');
             overlay.style.opacity = '0';
             setTimeout(() => overlay.style.display = 'none', 1000);
 
-            const music = document.getElementById('bg-music');
+            // Show the floating mute button
+            muteBtn.style.display = 'flex';
+
             music.play().catch(err => console.log("Audio waiting for interaction"));
         }
 
-        function revealParagraph(card) {
+        // Mute / Unmute logic
+        function toggleMute() {
+            if (music.muted) {
+                music.muted = false;
+                muteBtn.innerText = "🔊";
+            } else {
+                music.muted = true;
+                muteBtn.innerText = "🔇";
+            }
+        }
+
+        // Reveal card content
+        function revealParagraph(card, event) {
             const placeholder = card.querySelector('.placeholder-text');
             const message = card.querySelector('.actual-message');
             
+            // Only open if it's currently hidden
             if (message.style.display === 'none' || message.style.display === '') {
                 placeholder.style.display = 'none';
                 message.style.display = 'block';
             }
         }
 
+        // Close card content
+        function closeParagraph(button, event) {
+            // event.stopPropagation prevents the card container from instantly clicking open again
+            event.stopPropagation(); 
+            
+            const card = button.closest('.reveal-card');
+            const placeholder = card.querySelector('.placeholder-text');
+            const message = card.querySelector('.actual-message');
+            
+            message.style.display = 'none';
+            placeholder.style.display = 'block';
+        }
+
+        // Reveal the video container
         function revealVideo() {
             const videoWrapper = document.getElementById('video-wrapper');
             const giftButton = document.getElementById('gift-button');
+            const closeVideoButton = document.getElementById('close-video-button');
             
-            // Show video, hide gift box button
             videoWrapper.style.display = 'block';
+            closeVideoButton.style.display = 'block';
             giftButton.style.display = 'none';
             
-            // Automatically pause the background music so it doesn't clash with the video
-            const music = document.getElementById('bg-music');
-            music.pause();
+            // Note: Background music is NOT paused anymore!
+        }
+
+        // Close the video container and bring back the gift box
+        function closeVideo() {
+            const videoWrapper = document.getElementById('video-wrapper');
+            const giftButton = document.getElementById('gift-button');
+            const closeVideoButton = document.getElementById('close-video-button');
+            const iframe = document.getElementById('yt-player');
+            
+            videoWrapper.style.display = 'none';
+            closeVideoButton.style.display = 'none';
+            giftButton.style.display = 'block';
+            
+            // This little trick forces the YouTube video to reset and stop playing its audio behind the scenes
+            const currentSrc = iframe.src;
+            iframe.src = '';
+            iframe.src = currentSrc;
         }
     </script>
 </body>
